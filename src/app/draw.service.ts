@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {Settings} from "./settings";
-import {Ball} from "./ball";
 
 @Injectable()
 export class DrawService {
@@ -26,28 +25,31 @@ export class DrawService {
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.clearRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
     this.ctx.restore();
-    this.ctx.font = "12px Arial";
   }
 
   drawDebug(board) {
+    this.ctx.font = "12px Arial";
+    this.ctx.fillStyle = "#2980b9";
     this.ctx.fillText("MouseX: " + (board.x ? board.x : 0), 5, 15);
     this.ctx.fillText("MouseY: " + (board.y ? board.y : 0), 5, 30);
   }
 
   drawBricks(bricks) {
     bricks.forEach((brick) => {
-      this.ctx.beginPath();
-      this.ctx.rect(brick.x, brick.y, Settings.BRICK_WIDTH, Settings.BRICK_HEIGHT);
-      this.ctx.fillStyle = "#2980b9";
-      this.ctx.fill();
-      this.ctx.strokeStyle = "#CCC";
-      this.ctx.stroke();
+      if (brick.visible) {
+        this.ctx.beginPath();
+        this.ctx.rect(brick.x, brick.y, Settings.BRICK_WIDTH, Settings.BRICK_HEIGHT);
+        this.ctx.fillStyle = "#2980b9";
+        this.ctx.fill();
+        this.ctx.strokeStyle = "#CCC";
+        this.ctx.stroke();
+      }
     });
   }
 
   drawBall(ball) {
     this.ctx.beginPath();
-    this.ctx.arc(ball.x, ball.y, Ball.RADIUS, 0, 2*Math.PI);
+    this.ctx.arc(ball.x, ball.y, Settings.BALL_RADIUS, 0, 2*Math.PI);
     this.ctx.strokeStyle = "rgb(255, 0, 0)";
     this.ctx.fillStyle = "rgba(255, 255, 0, .5)";
     this.ctx.fill();
@@ -97,11 +99,11 @@ export class DrawService {
     this.ctx.quadraticCurveTo(x, y, x + radius.tl, y);
     this.ctx.closePath();
     if (fill) {
-      this.ctx.fillStyle = "rgba(255, 255, 0, .5)";
+      this.ctx.fillStyle = "#34495e";
       this.ctx.fill();
     }
     if (stroke) {
-      this.ctx.strokeStyle = "rgb(255, 0, 0)";
+      this.ctx.strokeStyle = "#e67e22";
       this.ctx.stroke();
     }
   }

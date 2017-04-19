@@ -12,7 +12,7 @@ import {Brick} from "./brick";
   providers: [DrawService]
 })
 export class AppComponent {
-  level = 2;
+  level = 1;
   context = null;
   debug: boolean = true;
   gameStarted: boolean  = false;
@@ -30,14 +30,22 @@ export class AppComponent {
     this.drawService.initCanvas(this.canvas, this.context);
   }
 
-  @HostListener('mousemove', ["$event"]) onMouseMove(event) {
+  @HostListener('document:mousemove', ["$event"]) onMouseMove(event) {
     if (this.trackMouse === true) {
-      this.board.x = event.offsetX;
-      this.board.y = event.offsetY;
+      let w;
+      if (window.innerWidth > Settings.CANVAS_WIDTH)
+        w = window.innerWidth;
+      else w = Settings.CANVAS_WIDTH;
+
+      this.board.x = event.clientX - ((w - Settings.CANVAS_WIDTH) / 2);
+      this.board.y = event.clientY;
     }
   }
 
   startGame() {
+    this.gameStarted = true;
+    document.body.style.cursor = "none";
+
     this.ball = new Ball();
     this.board = new Board();
     Settings.getGameField(this.level).forEach((row, index1) => {
@@ -53,7 +61,6 @@ export class AppComponent {
       })
     });
 
-    this.gameStarted = true;
     this.gameLoop();
     setTimeout(() => {
       this.trackMouse = true;
@@ -71,19 +78,9 @@ export class AppComponent {
         this.drawService.drawBricks(this.bricks);
 
         this.ball.updateBall();
-        this.checkBoardHit();
+        this.ball.checkBoardHit(this.board);
+        this.ball.checkBrickHit(this.bricks);
       }
-    }, 20);
-  }
-
-  checkBoardHit(){
-    if (this.ball.y === Settings.CANVAS_HEIGHT - 30) {
-      if (
-        this.board.x - this.board.boardWidth / 2 < this.ball.x &&
-        this.board.x + this.board.boardWidth / 2 > this.ball.x
-      ) {
-        this.ball.yDirection = "up";
-      }
-    }
+    }, 4);
   }
 }

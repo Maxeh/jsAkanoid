@@ -1,3 +1,9 @@
+.aka-wrapper {
+  width: 100%;
+  height: 100%;
+  background: blue;
+}
+
 .aka-game-field {
   width: 940px;
   height: 550px;
