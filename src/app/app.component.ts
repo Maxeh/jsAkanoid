@@ -3,6 +3,7 @@ import {Ball} from './ball';
 import {Board} from './board';
 import {DrawService} from "./draw.service";
 import {Settings} from "./settings";
+import {Brick} from "./brick";
 
 @Component({
   selector: 'app-root',
@@ -11,12 +12,15 @@ import {Settings} from "./settings";
   providers: [DrawService]
 })
 export class AppComponent {
+  level = 2;
   context = null;
   debug: boolean = true;
   gameStarted: boolean  = false;
+  trackMouse: boolean  = false;
   gameInterval = null;
   ball = null;
   board = null;
+  bricks = [];
   @ViewChild('canvas') canvas;
 
   constructor(public drawService: DrawService){}
@@ -24,19 +28,36 @@ export class AppComponent {
   ngAfterViewInit() {
     this.context = this.canvas.nativeElement.getContext("2d");
     this.drawService.initCanvas(this.canvas, this.context);
-
-    this.ball = new Ball();
-    this.board = new Board();
   }
 
   @HostListener('mousemove', ["$event"]) onMouseMove(event) {
-    this.board.x = event.offsetX;
-    this.board.y = event.offsetY;
+    if (this.trackMouse === true) {
+      this.board.x = event.offsetX;
+      this.board.y = event.offsetY;
+    }
   }
 
   startGame() {
+    this.ball = new Ball();
+    this.board = new Board();
+    Settings.getGameField(this.level).forEach((row, index1) => {
+      row.forEach((cell, index2) => {
+        if (cell === 1){
+          this.bricks.push(
+            new Brick(
+              Settings.BRICK_WIDTH * index2,
+              Settings.BRICK_HEIGHT * index1
+            )
+          );
+        }
+      })
+    });
+
     this.gameStarted = true;
     this.gameLoop();
+    setTimeout(() => {
+      this.trackMouse = true;
+    }, 50)
   }
 
   gameLoop(){
@@ -47,47 +68,12 @@ export class AppComponent {
           this.drawService.drawDebug(this.board);
         this.drawService.drawBall(this.ball);
         this.drawService.drawBoard(this.board, 3, true, true);
+        this.drawService.drawBricks(this.bricks);
 
-        this.updateBall();
+        this.ball.updateBall();
         this.checkBoardHit();
       }
     }, 20);
-  }
-
-  updateBall() {
-    if (this.ball.xChange === null) {
-      this.ball.xChange = 2;
-      this.ball.yChange = 1;
-
-      this.ball.xDirection = "left";
-      this.ball.yDirection = "up";
-    }
-
-    if (this.ball.xDirection === "left") {
-      this.ball.x -= this.ball.xChange;
-      if (this.ball.x < Ball.RADIUS) {
-        this.ball.xDirection ="right"
-      }
-    }
-    else {
-      this.ball.x += this.ball.xChange;
-      if (this.ball.x > Settings.CANVAS_WIDTH - Ball.RADIUS) {
-        this.ball.xDirection ="left"
-      }
-    }
-
-    if (this.ball.yDirection === "up") {
-      this.ball.y -= this.ball.yChange;
-      if (this.ball.y < Ball.RADIUS) {
-        this.ball.yDirection ="down"
-      }
-    }
-    else {
-      this.ball.y += this.ball.yChange;
-      if (this.ball.y > 372) {
-        //this.ball.yDirection ="up"
-      }
-    }
   }
 
   checkBoardHit(){

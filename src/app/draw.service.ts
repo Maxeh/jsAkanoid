@@ -34,6 +34,17 @@ export class DrawService {
     this.ctx.fillText("MouseY: " + (board.y ? board.y : 0), 5, 30);
   }
 
+  drawBricks(bricks) {
+    bricks.forEach((brick) => {
+      this.ctx.beginPath();
+      this.ctx.rect(brick.x, brick.y, Settings.BRICK_WIDTH, Settings.BRICK_HEIGHT);
+      this.ctx.fillStyle = "#2980b9";
+      this.ctx.fill();
+      this.ctx.strokeStyle = "#CCC";
+      this.ctx.stroke();
+    });
+  }
+
   drawBall(ball) {
     this.ctx.beginPath();
     this.ctx.arc(ball.x, ball.y, Ball.RADIUS, 0, 2*Math.PI);
@@ -86,9 +97,11 @@ export class DrawService {
     this.ctx.quadraticCurveTo(x, y, x + radius.tl, y);
     this.ctx.closePath();
     if (fill) {
+      this.ctx.fillStyle = "rgba(255, 255, 0, .5)";
       this.ctx.fill();
     }
     if (stroke) {
+      this.ctx.strokeStyle = "rgb(255, 0, 0)";
       this.ctx.stroke();
     }
   }

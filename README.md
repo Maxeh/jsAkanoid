@@ -1,2 +1,2 @@
 # jsAkanoid
-JavaScript version of the game Akanoid. The game was created with Angular2.
+JavaScript version of the game Arkanoid. The game was created with Angular2.
