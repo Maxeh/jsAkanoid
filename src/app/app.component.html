@@ -1,0 +1,8 @@
+<div class="aka-game-field">
+  <canvas #canvas></canvas>
+
+  <app-new-game
+    *ngIf="gameStarted === false"
+    (startGame)="startGame()"
+  ></app-new-game>
+</div>

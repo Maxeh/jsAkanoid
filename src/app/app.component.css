@@ -1,0 +1,17 @@
+.aka-game-field {
+  width: 700px;
+  height: 380px;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  border: 1px solid black;
+  background: rgba(204, 204, 204, .3) no-repeat center center fixed;
+  background-size: cover;
+  box-sizing: content-box;
+}
+
+.aka-game-field canvas {
+  position: absolute;
+  width: 700px;
+  height: 380px;
+}

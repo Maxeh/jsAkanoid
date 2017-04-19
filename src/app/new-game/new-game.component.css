@@ -1,0 +1,15 @@
+.aka-new-game {
+  width: 500px;
+  margin: 20px auto;
+  padding: 5px 30px;
+  border-radius: 10px;
+  background: #2c3e50;
+  -webkit-animation-duration: 0.4s;
+  animation-duration: 0.4s;
+}
+
+.aka-new-game h1 {
+  color: #FFF;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
