@@ -3,7 +3,13 @@
 
   <app-new-game
     *ngIf="gameStarted === false"
-    (startGame)="startGame()"
+    (startGame)="startGame($event)"
   ></app-new-game>
+
+  <app-level-up
+    *ngIf="gameStarted === true && levelCompleted === true"
+    (continueGame)="continueGame($event)"
+    [music]="music"
+  ></app-level-up>
 </div>
 

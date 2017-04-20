@@ -10,6 +10,8 @@ export class Ball {
   xDirection = "";
   yDirection = "";
 
+  gameOver = false;
+
   constructor(board) {
     this.x = board.x;
     this.y = board.y - board.boardHeight + 2;
@@ -47,7 +49,7 @@ export class Ball {
       else {
         this.y += this.yChange;
         if (this.y > Settings.CANVAS_HEIGHT - Settings.BALL_RADIUS) {
-          this.yDirection = "up"
+          this.gameOver = true;
         }
       }
     }
@@ -73,7 +75,7 @@ export class Ball {
       }
       else if ( // hit left corner of board
         this.xDirection === "right" &&
-        board.x - Settings.BALL_RADIUS*2 < this.x &&
+        board.x-z - Settings.BALL_RADIUS*2 < this.x &&
         board.x > this.x
       ) {
         this.yDirection = "up";
@@ -81,7 +83,7 @@ export class Ball {
       }
       else if ( // hit right corner of board
         this.xDirection === "left" &&
-        board.x + Settings.BALL_RADIUS*2 > this.x &&
+        board.x+z + Settings.BALL_RADIUS*2 > this.x &&
         board.x < this.x
       ) {
         this.yDirection = "up";

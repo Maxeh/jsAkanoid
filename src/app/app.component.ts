@@ -14,14 +14,17 @@ import {Brick} from "./brick";
 export class AppComponent {
   level = 1;
   context = null;
-  gameStarted: boolean  = false;
-  trackMouse: boolean  = false;
+  levelCompleted: boolean = false;
+  gameStarted: boolean = false;
+  trackMouse: boolean = false;
   initialClick: boolean = false;
   gameInterval = null;
   ball = null;
   board = null;
   bricks = [];
   @ViewChild('canvas') canvas;
+  audio = new Audio('assets/soundtrack.mp3');
+  music = true;
 
   constructor(public drawService: DrawService){}
 
@@ -54,12 +57,27 @@ export class AppComponent {
     }
   }
 
-  startGame() {
+  continueGame(music) {
+    this.levelCompleted = false;
+    this.level++;
+    this.startGame(music);
+  }
+
+  startGame(music) {
+    this.music = music;
+    if (this.music === true) {
+      this.audio.play();
+    }
+    else {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+    }
     this.gameStarted = true;
-    document.body.style.cursor = "none";
+    this.canvas.nativeElement.classList.toggle('no-cursor');
 
     this.board = new Board();
     this.ball = new Ball(this.board);
+    this.bricks = [];
     Settings.getGameField(this.level).forEach((row, index1) => {
       row.forEach((cell, index2) => {
         if (cell === 1){
@@ -80,6 +98,14 @@ export class AppComponent {
   }
 
   gameLoop(){
+    function finishLevel() {
+      this.canvas.nativeElement.classList.toggle('no-cursor');
+      clearInterval(this.gameInterval);
+      this.drawService.clearRect();
+      this.trackMouse = false;
+      this.initialClick = false;
+    }
+
     this.gameInterval = setInterval(() => {
       if (this.context !== null) {
         this.drawService.clearRect();
@@ -90,7 +116,21 @@ export class AppComponent {
         this.ball.updateBall(this.initialClick, this.board);
         this.ball.checkBoardHit(this.board);
         this.ball.checkBrickHit(this.bricks);
+
+        if (this.ball.gameOver) {
+          finishLevel.call(this);
+          this.gameStarted = false;
+          this.level = 1;
+        }
+
+        this.levelCompleted = this.bricks.every((brick) => {
+          return brick.visible === false;
+        });
+
+        if (this.levelCompleted === true) {
+          finishLevel.call(this);
+        }
       }
-    }, 10);
+    }, 5);
   }
 }

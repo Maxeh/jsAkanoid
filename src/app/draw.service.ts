@@ -85,7 +85,7 @@ export class DrawService {
       this.ctx.fill();
     }
     if (stroke) {
-      this.ctx.strokeStyle = "#e67e22";
+      this.ctx.strokeStyle = "#ecf0f1";
       this.ctx.stroke();
     }
   }
