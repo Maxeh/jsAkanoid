@@ -27,13 +27,6 @@ export class DrawService {
     this.ctx.restore();
   }
 
-  drawDebug(board) {
-    this.ctx.font = "12px Arial";
-    this.ctx.fillStyle = "#2980b9";
-    this.ctx.fillText("MouseX: " + (board.x ? board.x : 0), 5, 15);
-    this.ctx.fillText("MouseY: " + (board.y ? board.y : 0), 5, 30);
-  }
-
   drawBricks(bricks) {
     bricks.forEach((brick) => {
       if (brick.visible) {
@@ -58,18 +51,7 @@ export class DrawService {
 
   drawBoard(board, radius, fill, stroke) {
     let x = board.x;
-    if (x === null) {
-      x = board.boardX;
-    }
-    if (x < board.boardWidth / 2) {
-      x = board.boardWidth / 2
-    }
-    if (x > Settings.CANVAS_WIDTH - board.boardWidth / 2) {
-      x = Settings.CANVAS_WIDTH - board.boardWidth / 2;
-    }
-    x -= board.boardWidth / 2;
-
-    let y = board.boardY;
+    let y = board.y;
     let width = board.boardWidth;
     let height = board.boardHeight;
 

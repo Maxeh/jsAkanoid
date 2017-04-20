@@ -1,8 +1,8 @@
 import {Settings} from "./settings";
 
 export class Ball {
-  x = Settings.CANVAS_WIDTH / 2;
-  y = Settings.CANVAS_HEIGHT - 30;
+  x = 0;
+  y = 0;
 
   xChange = null;
   yChange = null;
@@ -10,49 +10,82 @@ export class Ball {
   xDirection = "";
   yDirection = "";
 
-  updateBall() {
-    if (this.xChange === null) {
-      this.xChange = 2;
-      this.yChange = 1;
+  constructor(board) {
+    this.x = board.x;
+    this.y = board.y - board.boardHeight + 2;
+  }
 
-      this.xDirection = "left";
-      this.yDirection = "up";
-    }
+  updateBall(initialClick, board) {
+    if (initialClick) {
+      if (this.xChange === null) {
+        this.xChange = 2;
+        this.yChange = 1;
 
-    if (this.xDirection === "left") {
-      this.x -= this.xChange;
-      if (this.x < Settings.BALL_RADIUS) {
-        this.xDirection ="right"
+        this.xDirection = "left";
+        this.yDirection = "up";
+      }
+
+      if (this.xDirection === "left") {
+        this.x -= this.xChange;
+        if (this.x < Settings.BALL_RADIUS) {
+          this.xDirection = "right"
+        }
+      }
+      else {
+        this.x += this.xChange;
+        if (this.x > Settings.CANVAS_WIDTH - Settings.BALL_RADIUS) {
+          this.xDirection = "left"
+        }
+      }
+
+      if (this.yDirection === "up") {
+        this.y -= this.yChange;
+        if (this.y < Settings.BALL_RADIUS) {
+          this.yDirection = "down"
+        }
+      }
+      else {
+        this.y += this.yChange;
+        if (this.y > Settings.CANVAS_HEIGHT - Settings.BALL_RADIUS) {
+          this.yDirection = "up"
+        }
       }
     }
     else {
-      this.x += this.xChange;
-      if (this.x > Settings.CANVAS_WIDTH - Settings.BALL_RADIUS) {
-        this.xDirection ="left"
-      }
-    }
-
-    if (this.yDirection === "up") {
-      this.y -= this.yChange;
-      if (this.y < Settings.BALL_RADIUS) {
-        this.yDirection ="down"
-      }
-    }
-    else {
-      this.y += this.yChange;
-      if (this.y > Settings.CANVAS_HEIGHT - Settings.BALL_RADIUS) {
-        this.yDirection ="up"
-      }
+      this.x = board.x + board.boardWidth / 2;
+      this.y = board.y - board.boardHeight + 2;
     }
   }
 
   checkBoardHit(board){
-    if (this.y === Settings.CANVAS_HEIGHT - 30) {
-      if (
-        board.x - board.boardWidth / 2 < this.x &&
-        board.x + board.boardWidth / 2 > this.x
+    const z = Settings.BALL_RADIUS / 2;
+
+    if (this.y === (board.y - board.boardHeight + 2) && this.yDirection === "down") {
+      console.log(board.x);
+      console.log(this.x);
+
+      if ( // hit top of board
+        board.x-z < this.x &&
+        board.x+z + board.boardWidth > this.x
       ) {
         this.yDirection = "up";
+        console.log(1);
+      }
+      else if ( // hit left corner of board
+        this.xDirection === "right" &&
+        board.x - Settings.BALL_RADIUS*2 < this.x &&
+        board.x > this.x
+      ) {
+        this.yDirection = "up";
+        this.xDirection = "left";
+      }
+      else if ( // hit right corner of board
+        this.xDirection === "left" &&
+        board.x + Settings.BALL_RADIUS*2 > this.x &&
+        board.x < this.x
+      ) {
+        this.yDirection = "up";
+        this.xDirection = "right";
       }
     }
   }

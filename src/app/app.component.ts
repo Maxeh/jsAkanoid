@@ -14,9 +14,9 @@ import {Brick} from "./brick";
 export class AppComponent {
   level = 1;
   context = null;
-  debug: boolean = true;
   gameStarted: boolean  = false;
   trackMouse: boolean  = false;
+  initialClick: boolean = false;
   gameInterval = null;
   ball = null;
   board = null;
@@ -38,7 +38,19 @@ export class AppComponent {
       else w = Settings.CANVAS_WIDTH;
 
       this.board.x = event.clientX - ((w - Settings.CANVAS_WIDTH) / 2);
-      this.board.y = event.clientY;
+      if (this.board.x < this.board.boardWidth / 2) {
+        this.board.x = this.board.boardWidth / 2
+      }
+      if (this.board.x > Settings.CANVAS_WIDTH - this.board.boardWidth / 2) {
+        this.board.x = Settings.CANVAS_WIDTH - this.board.boardWidth / 2;
+      }
+      this.board.x -= this.board.boardWidth / 2;
+    }
+  }
+
+  @HostListener('document:mousedown') onMouseDown() {
+    if (this.gameStarted) {
+      this.initialClick = true;
     }
   }
 
@@ -46,8 +58,8 @@ export class AppComponent {
     this.gameStarted = true;
     document.body.style.cursor = "none";
 
-    this.ball = new Ball();
     this.board = new Board();
+    this.ball = new Ball(this.board);
     Settings.getGameField(this.level).forEach((row, index1) => {
       row.forEach((cell, index2) => {
         if (cell === 1){
@@ -71,16 +83,14 @@ export class AppComponent {
     this.gameInterval = setInterval(() => {
       if (this.context !== null) {
         this.drawService.clearRect();
-        if (this.debug === true)
-          this.drawService.drawDebug(this.board);
         this.drawService.drawBall(this.ball);
         this.drawService.drawBoard(this.board, 3, true, true);
         this.drawService.drawBricks(this.bricks);
 
-        this.ball.updateBall();
+        this.ball.updateBall(this.initialClick, this.board);
         this.ball.checkBoardHit(this.board);
         this.ball.checkBrickHit(this.bricks);
       }
-    }, 4);
+    }, 10);
   }
 }
