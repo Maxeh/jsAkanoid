@@ -13,6 +13,7 @@ import {Brick} from "./brick";
 })
 export class AppComponent {
   level = 1;
+  maxLevel = Settings.getNumberOfLevels();
   context = null;
   levelCompleted: boolean = false;
   gameStarted: boolean = false;
@@ -52,7 +53,7 @@ export class AppComponent {
   }
 
   @HostListener('document:mousedown') onMouseDown() {
-    if (this.gameStarted) {
+    if (this.gameStarted && !this.levelCompleted) {
       this.initialClick = true;
     }
   }
@@ -131,6 +132,6 @@ export class AppComponent {
           finishLevel.call(this);
         }
       }
-    }, 5);
+    }, 6);
   }
 }

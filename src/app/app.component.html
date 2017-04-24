@@ -10,6 +10,8 @@
     *ngIf="gameStarted === true && levelCompleted === true"
     (continueGame)="continueGame($event)"
     [music]="music"
+    [level]="level"
+    [maxLevel]="maxLevel"
   ></app-level-up>
 </div>
 

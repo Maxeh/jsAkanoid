@@ -23,7 +23,9 @@ export class Ball {
         this.xChange = 2;
         this.yChange = 1;
 
-        this.xDirection = "left";
+        if (Math.random() < 0.5)
+          this.xDirection = "left";
+        else this.xDirection = "right";
         this.yDirection = "up";
       }
 
@@ -62,33 +64,57 @@ export class Ball {
   checkBoardHit(board){
     const z = Settings.BALL_RADIUS / 2;
 
-    if (this.y === (board.y - board.boardHeight + 2) && this.yDirection === "down") {
-      console.log(board.x);
-      console.log(this.x);
-
-      if ( // hit top of board
-        board.x-z < this.x &&
-        board.x+z + board.boardWidth > this.x
+    if ( // hit top of board
+      this.yDirection === "down" &&
+      this.y + Settings.BALL_RADIUS === board.y &&
+      this.x+z - Settings.BALL_RADIUS > board.x &&
+      this.x-z - Settings.BALL_RADIUS < board.x + board.boardWidth
       ) {
         this.yDirection = "up";
-        console.log(1);
       }
-      else if ( // hit left corner of board
-        this.xDirection === "right" &&
-        board.x-z - Settings.BALL_RADIUS*2 < this.x &&
-        board.x > this.x
-      ) {
+    else if ( // hit left side of board
+      this.yDirection === "down" &&
+      this.xDirection === "right" &&
+      this.y+z > board.y &&
+      this.y-z < board.y + board.boardHeight &&
+      (this.x + Settings.BALL_RADIUS === board.x ||
+       this.x + Settings.BALL_RADIUS - 1 === board.x)
+    ) {
+      // this will lead to game over
+      this.xDirection = "left";
+    }
+    else if ( // hit right side of board
+      this.yDirection === "down" &&
+      this.xDirection === "left" &&
+      this.y+z > board.y &&
+      this.y-z < board.y + board.boardHeight &&
+      (this.x - Settings.BALL_RADIUS === board.x ||
+      this.x - Settings.BALL_RADIUS - 1 === board.x)
+    ) {
+      // this will lead to game over
+      this.xDirection = "right";
+    }
+    else if ( // hit left corner of board
+      this.yDirection === "down" &&
+      this.xDirection === "right" &&
+      this.y + Settings.BALL_RADIUS > board.y &&
+      this.y + Settings.BALL_RADIUS < board.y + board.boardHeight &&
+      this.x + Settings.BALL_RADIUS > board.x &&
+      this.x + Settings.BALL_RADIUS < board.x + board.boardWidth
+    ) {
         this.yDirection = "up";
         this.xDirection = "left";
       }
-      else if ( // hit right corner of board
-        this.xDirection === "left" &&
-        board.x+z + Settings.BALL_RADIUS*2 > this.x &&
-        board.x < this.x
-      ) {
-        this.yDirection = "up";
-        this.xDirection = "right";
-      }
+    else if ( // hit right corner of board
+      this.yDirection === "down" &&
+      this.xDirection === "left" &&
+      this.y + Settings.BALL_RADIUS > board.y &&
+      this.y + Settings.BALL_RADIUS < board.y + board.boardHeight &&
+      this.x - Settings.BALL_RADIUS > board.x &&
+      this.x - Settings.BALL_RADIUS < board.x + board.boardWidth
+    ) {
+      this.yDirection = "up";
+      this.xDirection = "right";
     }
   }
 
@@ -114,7 +140,7 @@ export class Ball {
         this.yDirection = "up";
         brick.visible = false;
       }
-      else if ( // hit left side of brick
+      else if ( // hit right side of brick
       brick.visible === true && this.xDirection === "left" &&
       this.y+z > brick.y &&
       this.y-z < brick.y + Settings.BRICK_HEIGHT &&
@@ -124,7 +150,7 @@ export class Ball {
         this.xDirection = "right";
         brick.visible = false;
       }
-      else if ( // hit right side of brick
+      else if ( // hit left side of brick
       brick.visible === true && this.xDirection === "right" &&
       this.y+z > brick.y &&
       this.y-z < brick.y + Settings.BRICK_HEIGHT &&

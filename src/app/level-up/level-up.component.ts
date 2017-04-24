@@ -7,8 +7,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class LevelUpComponent {
   @Output() continueGame = new EventEmitter();
   @Input() music;
+  @Input() level;
+  @Input() maxLevel;
 
   onContinueGameClick() {
     this.continueGame.emit(this.music);
+  }
+
+  onPlayAgainClick() {
+    window.location.reload();
   }
 }

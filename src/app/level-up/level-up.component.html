@@ -1,17 +1,31 @@
 <div class="aka-popup animated slideInDown">
-  <h1 class="title">Level up!</h1>
+  <h2 *ngIf="level === maxLevel">Alle Level geschafft!</h2>
+  <h2 *ngIf="level !== maxLevel" class="title">Level{{level}} geschafft!</h2>
   <hr>
-  <button
-    class="btn btn-primary btn-lg btn-block"
-    type="button"
-    (click)="onContinueGameClick()"
-  >
-    Weiter
-  </button>
-  <div class="checkbox">
-    <label>
-      <input [(ngModel)]="music" type="checkbox">
-      Mit Musik spielen
-    </label>
+  <div *ngIf="level !== maxLevel">
+    <button
+      class="btn btn-primary btn-lg btn-block"
+      type="button"
+      (click)="onContinueGameClick()"
+    >
+      Weiter
+    </button>
+    <div class="checkbox">
+      <label>
+        <input [(ngModel)]="music" type="checkbox">
+        Mit Musik spielen
+      </label>
+    </div>
+  </div>
+
+  <div *ngIf="level === maxLevel">
+    <button
+      class="btn btn-primary btn-lg btn-block"
+      type="button"
+      (click)="onPlayAgainClick()"
+    >
+      Nochmal spielen
+    </button>
+    <br>
   </div>
 </div>
