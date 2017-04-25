@@ -21,6 +21,7 @@ export class AppComponent {
   initialClick: boolean = false;
   gameInterval = null;
   ball = null;
+  extraBalls = [];
   board = null;
   bricks = [];
   @ViewChild('canvas') canvas;
@@ -77,15 +78,16 @@ export class AppComponent {
     this.canvas.nativeElement.classList.toggle('no-cursor');
 
     this.board = new Board();
-    this.ball = new Ball(this.board);
+    this.ball = new Ball(this.board.x, this.board.y - this.board.boardHeight + 2, this);
     this.bricks = [];
     Settings.getGameField(this.level).forEach((row, index1) => {
       row.forEach((cell, index2) => {
-        if (cell === 1){
+        if (cell !== 0){
           this.bricks.push(
             new Brick(
               Settings.BRICK_WIDTH * index2,
-              Settings.BRICK_HEIGHT * index1
+              Settings.BRICK_HEIGHT * index1,
+              cell
             )
           );
         }
@@ -105,24 +107,53 @@ export class AppComponent {
       this.drawService.clearRect();
       this.trackMouse = false;
       this.initialClick = false;
+      this.extraBalls = [];
+      this.ball.updateBallCounter = 0;
+      if (this.ball.changeBoardTimeout !== null) {
+        clearTimeout(this.ball.changeBoardTimeout);
+        this.ball.changeBoardTimeout = null;
+      }
+      if (this.ball.changeDirectionTimeout !== null) {
+        clearTimeout(this.ball.changeDirectionTimeout);
+        this.ball.changeDirectionTimeout = null;
+      }
+      if (this.ball.changeDirectionInterval !== null) {
+        clearInterval(this.ball.changeDirectionInterval);
+        this.ball.changeDirectionInterval = null;
+      }
     }
 
     this.gameInterval = setInterval(() => {
       if (this.context !== null) {
         this.drawService.clearRect();
-        this.drawService.drawBall(this.ball);
         this.drawService.drawBoard(this.board, 3, true, true);
         this.drawService.drawBricks(this.bricks);
 
-        this.ball.updateBall(this.initialClick, this.board);
-        this.ball.checkBoardHit(this.board);
-        this.ball.checkBrickHit(this.bricks);
-
-        if (this.ball.gameOver) {
-          finishLevel.call(this);
-          this.gameStarted = false;
-          this.level = 1;
+        // update the main ball
+        if (this.ball.gameOver === false) {
+          this.drawService.drawBall(this.ball);
+          this.ball.updateBall(this.initialClick, this.board);
+          this.ball.checkBoardHit(this.board);
+          this.ball.checkBrickHit(this.bricks);
         }
+        else {
+          if (this.extraBalls.length === 0){
+            finishLevel.call(this);
+            this.gameStarted = false;
+            this.level = 1;
+          }
+        }
+
+        // update the extra balls
+        this.extraBalls.forEach((ball, index) => {
+          this.drawService.drawBall(ball);
+          ball.updateBall(this.initialClick, this.board);
+          ball.checkBoardHit(this.board);
+          ball.checkBrickHit(this.bricks);
+          if (ball.gameOver) {
+            this.extraBalls.splice(index, 1);
+          }
+        });
 
         this.levelCompleted = this.bricks.every((brick) => {
           return brick.visible === false;
@@ -132,6 +163,6 @@ export class AppComponent {
           finishLevel.call(this);
         }
       }
-    }, 6);
+    }, 5);
   }
 }

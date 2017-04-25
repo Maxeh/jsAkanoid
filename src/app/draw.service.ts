@@ -36,6 +36,67 @@ export class DrawService {
         this.ctx.fill();
         this.ctx.strokeStyle = "#CCC";
         this.ctx.stroke();
+
+        switch(brick.type) {
+          case "changeDirection":
+            this.ctx.fillStyle = "#503047";
+            this.ctx.fill();
+            this.ctx.strokeStyle = "#CCC";
+            this.ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.lineWidth = 3;
+            this.ctx.arc(
+              brick.x + Settings.BRICK_WIDTH / 2,
+              brick.y + Settings.BRICK_HEIGHT / 2,
+              8, 0, 2*Math.PI);
+            this.ctx.lineWidth = 2;
+            this.ctx.font="bold 13px Georgia";
+            this.ctx.fillStyle = "#CCC";
+            this.ctx.fillText(
+              "?", brick.x + Settings.BRICK_WIDTH / 2 - 4,
+              brick.y + Settings.BRICK_HEIGHT / 2 + 5);
+            this.ctx.strokeStyle = "#CCC";
+            this.ctx.stroke();
+            this.ctx.lineWidth = 1; // reset lineWidth
+            break;
+          case "extraBall":
+            this.ctx.fillStyle = "#e67e22";
+            this.ctx.fill();
+            this.ctx.strokeStyle = "#CCC";
+            this.ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.arc(
+              brick.x + Settings.BRICK_WIDTH / 2,
+              brick.y + Settings.BRICK_HEIGHT / 2,
+              Settings.BALL_RADIUS, 0, 2*Math.PI);
+            this.ctx.lineWidth = 2;
+            this.ctx.fillStyle = "#e74c3c";
+            this.ctx.strokeStyle = "#c0392b";
+            this.ctx.fill();
+            this.ctx.stroke();
+            this.ctx.lineWidth = 1; // reset lineWidth
+            break;
+          case "longBoard":
+            this.ctx.fillStyle = "#0B6E4F";
+            this.ctx.fill();
+            this.ctx.strokeStyle = "#CCC";
+            this.ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.lineWidth = 2;
+            this.ctx.moveTo(brick.x + Settings.BRICK_WIDTH / 2 - 10, brick.y + Settings.BRICK_HEIGHT / 2);
+            this.ctx.lineTo(brick.x + Settings.BRICK_WIDTH / 2 + 10, brick.y + Settings.BRICK_HEIGHT / 2);
+            this.ctx.moveTo(brick.x + Settings.BRICK_WIDTH / 2 - 10, brick.y + Settings.BRICK_HEIGHT / 2);
+            this.ctx.lineTo(brick.x + Settings.BRICK_WIDTH / 2 - 7, brick.y + Settings.BRICK_HEIGHT / 2 + 3);
+            this.ctx.moveTo(brick.x + Settings.BRICK_WIDTH / 2 - 10, brick.y + Settings.BRICK_HEIGHT / 2);
+            this.ctx.lineTo(brick.x + Settings.BRICK_WIDTH / 2 - 7, brick.y + Settings.BRICK_HEIGHT / 2 - 3);
+            this.ctx.moveTo(brick.x + Settings.BRICK_WIDTH / 2 + 10, brick.y + Settings.BRICK_HEIGHT / 2);
+            this.ctx.lineTo(brick.x + Settings.BRICK_WIDTH / 2 + 7, brick.y + Settings.BRICK_HEIGHT / 2 - 3);
+            this.ctx.moveTo(brick.x + Settings.BRICK_WIDTH / 2 + 10, brick.y + Settings.BRICK_HEIGHT / 2);
+            this.ctx.lineTo(brick.x + Settings.BRICK_WIDTH / 2 + 7, brick.y + Settings.BRICK_HEIGHT / 2 + 3);
+            this.ctx.strokeStyle = "#CCC";
+            this.ctx.stroke();
+            this.ctx.lineWidth = 1; // reset lineWidth
+        }
       }
     });
   }
@@ -43,8 +104,8 @@ export class DrawService {
   drawBall(ball) {
     this.ctx.beginPath();
     this.ctx.arc(ball.x, ball.y, Settings.BALL_RADIUS, 0, 2*Math.PI);
-    this.ctx.strokeStyle = "rgb(255, 0, 0)";
-    this.ctx.fillStyle = "rgba(255, 255, 0, .5)";
+    this.ctx.strokeStyle = "#c0392b";
+    this.ctx.fillStyle = "#e74c3c";
     this.ctx.fill();
     this.ctx.stroke();
   }
