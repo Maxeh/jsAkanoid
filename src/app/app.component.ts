@@ -109,10 +109,11 @@ export class AppComponent {
       this.initialClick = false;
       this.extraBalls = [];
       this.ball.updateBallCounter = 0;
-      if (this.ball.changeBoardTimeout !== null) {
-        clearTimeout(this.ball.changeBoardTimeout);
-        this.ball.changeBoardTimeout = null;
-      }
+
+      this.ball.changeBoardTimeouts.forEach((timeout) => {
+        clearInterval(timeout);
+      });
+      this.ball.changeBoardTimeouts = [];
       if (this.ball.changeDirectionTimeout !== null) {
         clearTimeout(this.ball.changeDirectionTimeout);
         this.ball.changeDirectionTimeout = null;

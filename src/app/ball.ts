@@ -10,7 +10,7 @@ export class Ball {
   gameOver = false;
   changeDirectionInterval = null;
   changeDirectionTimeout = null;
-  changeBoardTimeout = null;
+  changeBoardTimeouts = [];
   updateBallCounter = 0;
   mainClass = null;
 
@@ -264,11 +264,11 @@ export class Ball {
     if (this.mainClass.board.x > 25)
       this.mainClass.board.x -= 25;
 
-    this.changeBoardTimeout = setTimeout(() => {
+    this.changeBoardTimeouts.push(setTimeout(() => {
       this.mainClass.board.boardWidth -= 50;
       if (this.mainClass.board.x < (Settings.CANVAS_WIDTH-25))
         this.mainClass.board.x += 25;
-    }, 15000)
+    }, 15000));
   }
 
   extraBallEvent(brick) {
@@ -293,7 +293,7 @@ export class Ball {
           this.xChange = 1;
         }
         else this.xChange = 2;
-      }, 80);
+      }, 50);
 
       this.changeDirectionTimeout = setTimeout(() => {
         clearInterval(this.changeDirectionInterval);
