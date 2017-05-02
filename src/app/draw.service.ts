@@ -96,6 +96,25 @@ export class DrawService {
             this.ctx.strokeStyle = "#CCC";
             this.ctx.stroke();
             this.ctx.lineWidth = 1; // reset lineWidth
+            break;
+          case "strongBrick":
+            this.ctx.fillStyle = "#bdc3c7";
+            this.ctx.fill();
+            this.ctx.strokeStyle = "#CCC";
+            this.ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.lineWidth = 2;
+            for (let i = 1; i < 4; i++) {
+              if (brick.hits > i) {
+                this.ctx.moveTo(brick.x, brick.y + (Settings.BRICK_HEIGHT / 4) * i);
+                this.ctx.lineTo(brick.x + Settings.BRICK_WIDTH, brick.y + (Settings.BRICK_HEIGHT / 4) * i);
+              }
+              else break;
+            }
+            this.ctx.strokeStyle = "#777";
+            this.ctx.stroke();
+            this.ctx.lineWidth = 1; // reset lineWidth
+            break;
         }
       }
     });
